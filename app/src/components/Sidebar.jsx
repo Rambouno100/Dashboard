@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import useUserStore from "../store/UserStore";
 
 const menu = [
   { label: "Inicio", path: "/", icon: "home" },
@@ -15,10 +16,13 @@ const Icon = ({ name }) => <span className="material-symbols-outlined text-lg">{
 
 export function Sidebar() {
   const [open, setOpen] = useState(null);
+  const { user } = useUserStore();
 
   return (
-    <aside className="w-56 h-screen bg-black text-white flex flex-col p-4 gap-1">
+    <aside className="w-60 h-screen bg-black text-white flex flex-col p-4 gap-1">
       <h2 className="text-sm font-medium text-gray-400 mb-4 px-2">Dashboard</h2>
+
+
       {menu.map(({ label, path, icon, children }) => (
         <div key={label}>
           {path
@@ -38,6 +42,24 @@ export function Sidebar() {
           }
         </div>
       ))}
+
+
+      <div className="mt-auto pt-3 border-t border-white/10">
+        <div className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition-colors">
+          <img
+            src={user.avatar}
+            alt={user.name}
+            className="w-8 h-8 rounded-full border border-white/20 flex-shrink-0"
+          />
+          <div className="flex flex-col overflow-hidden flex-1">
+            <span className="text-xs font-medium text-white truncate">{user.name}</span>
+            <span className="text-xs text-gray-500 truncate">{user.email}</span>
+          </div>
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white text-black flex-shrink-0">
+            {user.plan}
+          </span>
+        </div>
+      </div>
     </aside>
   );
 }
