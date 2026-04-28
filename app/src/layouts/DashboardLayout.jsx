@@ -8,7 +8,7 @@ export function DashboardLayout() {
 
       <Sidebar />
 
-      <main style={{ flex: 1, padding: "20px", overflowY: "auto" }}>
+      <main style={{ flex: 1, overflowY: "auto" }}>
 
         <Outlet />
       </main>

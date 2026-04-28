@@ -1,40 +1,28 @@
-// use-todos.js - SOLO lógica, cero HTML
+import { useState, useEffect } from "react";
 
-import { useState } from "react";
+const KEY = "todos_v1";
 
 export function useTodos() {
-
-    const [todos, setTodos] = useState([]);
+    const [todos, setTodos] = useState(() => {
+        try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch { return []; }
+    });
     const [inputValue, setInputValue] = useState("");
 
+    useEffect(() => { localStorage.setItem(KEY, JSON.stringify(todos)); }, [todos]);
 
-    function handleInputChange(event) {
-        setInputValue(event.target.value);
-    }
-
+    const handleInputChange = e => setInputValue(e.target.value);
 
     function agregarTarea() {
-        if (inputValue === "") return;
-        const tareaNueva = {
-            id: Date.now(),
-            text: inputValue,
-        };
-        setTodos([...todos, tareaNueva]);
+        if (!inputValue.trim()) return;
+        setTodos([...todos, { id: Date.now(), text: inputValue.trim(), done: false }]);
         setInputValue("");
     }
 
+    function eliminarTarea(id) { setTodos(todos.filter(t => t.id !== id)); }
 
-    function eliminarTarea(id) {
-        const listaActualizada = todos.filter((tarea) => tarea.id !== id);
-        setTodos(listaActualizada);
+    function toggleTarea(id) {
+        setTodos(todos.map(t => t.id !== id ? t : { ...t, done: !t.done }));
     }
 
-
-    return {
-        todos,
-        inputValue,
-        handleInputChange,
-        agregarTarea,
-        eliminarTarea,
-    };
+    return { todos, inputValue, handleInputChange, agregarTarea, eliminarTarea, toggleTarea };
 }
